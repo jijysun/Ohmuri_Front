@@ -1,131 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kakao Login, Music, and User Management</title>
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
-  <div id="root"></div>
-  <script type="text/babel">
-    const App = () => {
-      const [page, setPage] = React.useState("home");
-
-      return (
-        <div className="p-4">
-          <header className="flex justify-between items-center bg-white shadow p-4 mb-4">
-            <h1 className="text-xl font-bold">Music & User Management</h1>
-            <nav>
-              <button
-                className="px-4 py-2 mx-2 bg-blue-500 text-white rounded"
-                onClick={() => setPage("login")}
-              >
-                Kakao Login
-              </button>
-              <button
-                className="px-4 py-2 mx-2 bg-green-500 text-white rounded"
-                onClick={() => setPage("music")}
-              >
-                Music Management
-              </button>
-              <button
-                className="px-4 py-2 mx-2 bg-yellow-500 text-white rounded"
-                onClick={() => setPage("user")}
-              >
-                User Info
-              </button>
-            </nav>
-          </header>
-          <main>
-            {page === "login" && <KakaoLogin />}
-            {page === "music" && <MusicPage />}
-            {page === "user" && <UserPage />}
-          </main>
+<body>
+    <div class="container">
+        <h1>Welcome!</h1>
+        <div class="button-group">
+            <a href="login.html" class="button">Login</a>
+            <a href="signup.html" class="button">Sign Up</a>
         </div>
-      );
-    };
-
-    const KakaoLogin = () => {
-      const KAKAO_AUTH_URL = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI";
-
-      const handleKakaoLogin = () => {
-        window.location.href = KAKAO_AUTH_URL;
-      };
-
-      return (
-        <div>
-          <h2 className="text-2xl font-bold mb-4">Kakao Login</h2>
-          <button
-            onClick={handleKakaoLogin}
-            className="px-4 py-2 bg-yellow-500 text-white rounded"
-          >
-            Login with Kakao
-          </button>
-        </div>
-      );
-    };
-
-    const MusicPage = () => {
-      const [musicList, setMusicList] = React.useState([]);
-
-      React.useEffect(() => {
-        fetch("/music-list", { method: "POST", credentials: "include" })
-          .then((response) => response.json())
-          .then((data) => setMusicList(data))
-          .catch((error) => console.error("Error fetching music list:", error));
-      }, []);
-
-      return (
-        <div>
-          <h2 className="text-2xl font-bold mb-4">Music Management</h2>
-          <ul className="list-disc pl-5">
-            {musicList.map((music, index) => (
-              <li key={index}>
-                <strong>{music.title}</strong> by {music.artist}
-              </li>
-            ))}
-          </ul>
-        </div>
-      );
-    };
-
-    const UserPage = () => {
-      const [userInfo, setUserInfo] = React.useState(null);
-
-      React.useEffect(() => {
-        fetch("/user-info", { credentials: "include" })
-          .then((response) => response.json())
-          .then((data) => setUserInfo(data))
-          .catch((error) => console.error("Error fetching user info:", error));
-      }, []);
-
-      return (
-        <div>
-          <h2 className="text-2xl font-bold mb-4">User Info</h2>
-          {userInfo ? (
-            <div>
-              <p>
-                <strong>Username:</strong> {userInfo.username}
-              </p>
-              <p>
-                <strong>Email:</strong> {userInfo.userId}
-              </p>
-              <p>
-                <strong>Grade:</strong> {userInfo.grade}
-              </p>
-            </div>
-          ) : (
-            <p>Loading user info...</p>
-          )}
-        </div>
-      );
-    };
-
-    ReactDOM.render(<App />, document.getElementById("root"));
-  </script>
+    </div>
 </body>
 </html>

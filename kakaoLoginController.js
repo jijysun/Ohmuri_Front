@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-<script type="text/babel">
+<script type="text/babel"></script>
 const KakaoLogin = () => {
   const KAKAO_AUTH_URL = process.env.REACT_APP_KAKAO_AUTH_URL; // 서버에서 제공되는 카카오 로그인 URL
 
@@ -45,5 +45,5 @@ const KakaoCallback = () => {
     </div>
   );
 };
-</script>
+
 export { KakaoLogin, KakaoCallback };
