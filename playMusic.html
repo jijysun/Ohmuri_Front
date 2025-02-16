@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Music</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: black;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        iframe {
+            width: 100%;
+            height: 70%;
+            border-radius: 10px;
+        }
+
+        .info {
+            margin-top: 10px;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .artist {
+            font-size: 16px;
+            color: #bbb;
+        }
+
+        .buttons {
+            position: absolute;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .btn {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background-color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <iframe id="musicFrame" src="" frameborder="0" allowfullscreen></iframe>
+        <div class="info">
+            <p class="title" id="musicTitle"></p>
+            <p class="artist" id="musicArtist"></p>
+        </div>
+    </div>
+
+    <div class="buttons">
+        <button class="btn" onclick="fetchMusic('previous')">▲</button>
+        <button class="btn" onclick="fetchMusic('next')">▼</button>
+    </div>
+
+    <script>
+        async function fetchMusic(type) {
+            let url = type ? `http://localhost:8080/play-music/${type}` : 'http://localhost:8080/play-music';
+
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    credentials: 'include' // 🎯 세션 쿠키 포함
+                });
+
+                if (response.status === 401) {
+                    alert("로그인이 필요합니다.");
+                    window.location.href = "/login.html"; // 로그인 페이지로 이동
+                    return;
+                }
+
+                if (!response.ok) throw new Error("Failed to fetch music data");
+
+                const data = await response.json();
+                updateMusicPlayer(data);
+            } catch (error) {
+                console.error("Error fetching music:", error);
+            }
+        }
+
+
+        function updateMusicPlayer(data) {
+            document.getElementById("musicTitle").textContent = data.title;
+            document.getElementById("musicArtist").textContent = data.artist;
+            document.getElementById("musicFrame").src = `https://youtube.com/embed/${data.link}?autoplay=1`;
+        }
+
+        // 페이지 로딩 시 음악 데이터 불러오기
+        fetchMusic();
+    </script>
+
+</body>
+
+</html>

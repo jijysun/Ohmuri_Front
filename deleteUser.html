@@ -1,0 +1,40 @@
+<!-- 회원 탈퇴 페이지 (DELETE 요청) -->
+<body>
+    <div class="container">
+        <h2>회원 탈퇴</h2>
+
+        <p>정말로 회원을 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
+
+        <button class="button" onclick="deleteUser()">탈퇴하기</button>
+
+        <div id="alertMessage" style="color: red; margin-top: 10px;"></div>
+        <button class="button" onclick="goToHome()">홈으로 가기</button>
+    </div>
+
+    <script>
+        async function deleteUser() {
+            try {
+                const response = await fetch("http://localhost:8080/users/my-page", {
+                    method: "DELETE",
+                    credentials: "include"
+                });
+
+                if (response.ok) {
+                    document.getElementById("alertMessage").textContent = "삭제되었습니다, 다시 만나요 :)";
+                    setTimeout(() => {
+                        window.location.href = "index.html"; // 홈으로 리디렉션
+                    }, 2000);
+                } else {
+                    throw new Error("회원 탈퇴에 실패했습니다.");
+                }
+            } catch (error) {
+                console.error("Error deleting user:", error);
+                alert("회원 탈퇴에 실패했습니다.");
+            }
+        }
+
+        function goToHome() {
+            window.location.href = "index.html";
+        }
+    </script>
+</body>

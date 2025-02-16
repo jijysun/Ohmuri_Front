@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -80,6 +81,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h2>Login</h2>
@@ -95,10 +97,41 @@
         <div class="link">
             Don't have an account? <a href="sign-up.html">Sign Up</a>
         </div>
+        <!-- 인덱스 페이지로 가는 버튼 추가 -->
+        <div class="link">
+            <a href="index.html">Go to Index Page</a>
+        </div>
+
+        <div class="link">
+            <a href="javascript:void(0);" onclick="redirectToKakaoLogin()">
+                <img src="/kakao_login_medium_narrow.png" alt="카카오 로그인">
+            </a>
+        </div>
     </div>
 
     <script>
-        const API_BASE_URL = "http://localhost:8080";
+        async function getKakaoConfig() {
+            try {
+                const response = await fetch("http://localhost:8080/login-kakao");
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error("카카오 설정 정보를 가져오는 중 오류 발생:", error);
+            }
+        }
+
+        async function redirectToKakaoLogin() {
+            const kakaoConfig = await getKakaoConfig(); // 백엔드에서 설정값 가져오기
+
+            if (!kakaoConfig) {
+                alert("카카오 로그인 설정을 불러올 수 없습니다.");
+                return;
+            }
+
+            const kakaoLoginUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${kakaoConfig.clientId}&redirect_uri=${kakaoConfig.redirectUri}`;
+
+            window.location.href = kakaoLoginUrl; // 카카오 로그인 페이지로 이동
+        }
 
         async function login() {
             const userId = document.getElementById('userId').value;
@@ -107,17 +140,18 @@
             const payload = { userId, password };
 
             try {
-                const response = await fetch(`${API_BASE_URL}/login`, {
+                const response = await fetch("http://localhost:8080/users/login", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(payload),
+                    credentials: 'include' // 세션 쿠키 포함
                 });
 
                 if (response.ok) {
-                    alert('Login successful!');
-                    // Redirect or load user-specific content here
+                    // 로그인 성공 시 인덱스 페이지로 이동
+                    window.location.href = "/";
                 } else {
                     const error = await response.json();
                     alert(`Error: ${error.message}`);
@@ -129,4 +163,5 @@
         }
     </script>
 </body>
+
 </html>
